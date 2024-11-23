@@ -7,6 +7,10 @@ from . import messages
 
 
 class Library:
+    """
+    Класс 'Библиотека'.
+    Работает непосредственно с базой данных (JSON-файлом)
+    """
     
     def __init__(self, file: str) -> None:
         self.file = file
@@ -33,6 +37,7 @@ class Library:
             try:
                 return json.load(json_file)
             except JSONDecodeError:
+                # Если JSON-структура нарушена, то файл будет перезаписан
                 return []
 
     def add(self, book: dict) -> None:
@@ -89,16 +94,17 @@ class Library:
             List[Book]: список книг
         """
         
-        founded_books: list = []
+        founded_books: List[dict] = []
         for book in self.books:
             if (query == book['title'] or
                 query == book['author'] or
-                query == book['year']):
+                query == book['year'] or
+                query == str(book['year'])):
                 founded_books.append(book)
         
         return founded_books
     
-    def change_status(self, book_id: int, new_status: int):
+    def change_status(self, book_id: int, new_status: int) -> None:
         """Задает новый статус книги
 
         Args:
@@ -108,7 +114,7 @@ class Library:
         if new_status not in (0, 1,):
             raise ValueError
         
-        books = self.books
+        books: dict = self.books
         for book in books:
             if book['id'] == book_id:
                 book['status'] = new_status
@@ -138,10 +144,7 @@ class Library:
     def _get_new_id(self) -> int:
         """Возвращает новый уникальный id"""
 
-        ids = [book['id'] for book in self.books]
-        if ids:
-            return max(ids) + 1
-        return 1
+        return max([book['id'] for book in self.books], default=0) + 1
     
     def _rewrite_library(self, new_data) -> None:
         """Перезаписывает библиотеку с новыми данными

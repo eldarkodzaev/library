@@ -15,6 +15,8 @@ class TestLibrary(unittest.TestCase):
         {"id": 3, "title": "Book3", "author": "Author3", "year": 2002, "status": 1},
         {"id": 4, "title": "Book4", "author": "Author1", "year": 2000, "status": 1},
         {"id": 5, "title": "Book4", "author": "Author4", "year": 2000, "status": 0},
+        {"id": 6, "title": "1984", "author": "Джордж Оруэлл", "year": 1900, "status": 0},
+        {"id": 7, "title": "Book0", "author": "Джордж Оруэлл", "year": 1984, "status": 0},
     ]
     
     def setUp(self):
@@ -23,15 +25,15 @@ class TestLibrary(unittest.TestCase):
         self.library = Library(file="tests/test_library.json")
 
     def test_get_new_id(self):
-        self.assertEqual(6, self.library._get_new_id())
+        self.assertEqual(8, self.library._get_new_id())
         
     def test_books(self):
         self.assertListEqual(self.test_data, self.library.books)
         
     def test_add(self):
         book = {
-            "title": "Book6",
-            "author": "Author6",
+            "title": "Book7",
+            "author": "Author7",
             "year": 2003
         }
         self.library.add(book)
@@ -39,7 +41,7 @@ class TestLibrary(unittest.TestCase):
         expected_list = copy(self.test_data)
         expected_list.append(
             {
-                "id": 6,
+                "id": 8,
                 "title": book['title'],
                 "author": book['author'],
                 "year": book['year'],
@@ -57,6 +59,8 @@ class TestLibrary(unittest.TestCase):
             {"id": 3, "title": "Book3", "author": "Author3", "year": 2002, "status": 1},
             {"id": 4, "title": "Book4", "author": "Author1", "year": 2000, "status": 1},
             {"id": 5, "title": "Book4", "author": "Author4", "year": 2000, "status": 0},
+            {"id": 6, "title": "1984", "author": "Джордж Оруэлл", "year": 1900, "status": 0},
+            {"id": 7, "title": "Book0", "author": "Джордж Оруэлл", "year": 1984, "status": 0},
         ]
         self.assertListEqual(expected_list, self.library.books)
         
@@ -96,6 +100,15 @@ class TestLibrary(unittest.TestCase):
             {"id": 5, "title": "Book4", "author": "Author4", "year": 2000, "status": 0},
         ]
         self.assertListEqual(expected_list, books)
+        
+        # Случай, когда в библиотеке есть книги с совпадающими названием и годом издания
+        query = "1984"
+        books = self.library.search(query)
+        expected_list = [
+            {"id": 6, "title": "1984", "author": "Джордж Оруэлл", "year": 1900, "status": 0},
+            {"id": 7, "title": "Book0", "author": "Джордж Оруэлл", "year": 1984, "status": 0},
+        ]
+        self.assertListEqual(expected_list, books)
 
     def test_change_status(self):
         self.library.change_status(book_id=1, new_status=0)
@@ -105,6 +118,8 @@ class TestLibrary(unittest.TestCase):
             {"id": 3, "title": "Book3", "author": "Author3", "year": 2002, "status": 1},
             {"id": 4, "title": "Book4", "author": "Author1", "year": 2000, "status": 1},
             {"id": 5, "title": "Book4", "author": "Author4", "year": 2000, "status": 0},
+            {"id": 6, "title": "1984", "author": "Джордж Оруэлл", "year": 1900, "status": 0},
+            {"id": 7, "title": "Book0", "author": "Джордж Оруэлл", "year": 1984, "status": 0},
         ]
         self.assertListEqual(expected_list, self.library.books)
         

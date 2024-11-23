@@ -45,7 +45,7 @@ def show_all_books(library: Library) -> None:
     for book in books:
         status = "в наличии" if book['status'] == 1 else "выдана"
         print(f"{book['id']}, {book['title']}, {book['author']},",
-              f"{book['year']}, {status}")
+              f"{book['year']} г., {status}")
 
 
 def search(library: Library) -> None:
