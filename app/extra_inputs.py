@@ -20,11 +20,10 @@ def input_book_id() -> int:
     Returns:
         int: id книги
     """
-    while True:
-        try:
-            return int(input("Введите id книги: "))
-        except ValueError:
-            print("Id должно быть числом")
+    try:
+        return int(input("Введите id книги: "))
+    except ValueError:
+        print("Id должно быть числом")
 
 
 def input_status() -> int:

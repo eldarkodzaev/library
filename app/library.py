@@ -1,6 +1,5 @@
 import json
 import os
-from typing import List
 from json.decoder import JSONDecodeError
 
 from . import messages
@@ -47,7 +46,7 @@ class Library:
             book (dict): книга
         """
 
-        books = self.books        
+        books: list[dict] = self.books        
         books.append(
             {
                 "id": self._get_new_id(),
@@ -78,13 +77,10 @@ class Library:
                 book_for_delete = book
                 break
         
-        if book_for_delete:
-            books.remove(book_for_delete)
-            self._rewrite_library(new_data=books)
-        else:
-            raise ValueError
+        books.remove(book_for_delete)
+        self._rewrite_library(new_data=books)
         
-    def search(self, query: str) -> List[dict]:
+    def search(self, query: str) -> list[dict]:
         """Поиск книг по названию, автору или году
 
         Args:
@@ -94,7 +90,7 @@ class Library:
             List[Book]: список книг
         """
         
-        founded_books: List[dict] = []
+        founded_books: list[dict] = []
         for book in self.books:
             if (query == book['title'] or
                 query == book['author'] or
@@ -112,9 +108,9 @@ class Library:
             new_status (int): 1 - в наличии, 0 - выдана
         """
         if new_status not in (0, 1,):
-            raise ValueError
+            raise ValueError("Статус должен быть либо 1 либо 0")
         
-        books: dict = self.books
+        books: list[dict] = self.books
         for book in books:
             if book['id'] == book_id:
                 book['status'] = new_status
@@ -131,10 +127,7 @@ class Library:
         Returns:
             bool: True/False
         """
-        for book in self.books:
-            if book['id'] == book_id:
-                return True
-        return False
+        return any([book['id'] == book_id for book in self.books])
         
     def _library_exists(self) -> bool:
         """Проверяет, существует ли файл базы данных"""
@@ -146,7 +139,7 @@ class Library:
 
         return max([book['id'] for book in self.books], default=0) + 1
     
-    def _rewrite_library(self, new_data) -> None:
+    def _rewrite_library(self, new_data: list[dict]) -> None:
         """Перезаписывает библиотеку с новыми данными
 
         Args:

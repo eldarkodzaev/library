@@ -19,24 +19,22 @@ def add(library: Library) -> None:
 def delete(library: Library) -> None:
     """Удаляет книгу из библиотеки"""
 
-    while True:
-        if not library.books:
-            print(messages.LIBRARY_IS_EMPTY)
-            return
+    if not library.books:
+        print(messages.LIBRARY_IS_EMPTY)
+        return
 
-        book_id = input_book_id()
-        try:
-            library.delete(book_id)
-            print(messages.BOOK_HAS_BEEN_DELETED)
-            break
-        except IndexError:
-            print(messages.BOOK_NOT_FOUND)
+    book_id: int = input_book_id()
+    try:
+        library.delete(book_id)
+        print(messages.BOOK_HAS_BEEN_DELETED)
+    except IndexError:
+        print(messages.BOOK_NOT_FOUND)
 
 
 def show_all_books(library: Library) -> None:
     """Показывает все книги в библиотеке"""
 
-    books = library.books
+    books: list[dict] = library.books
 
     if not books:
         print(messages.LIBRARY_IS_EMPTY)
@@ -62,9 +60,9 @@ def search(library: Library) -> None:
         print(messages.BOOKS_NOT_FOUND)
         return
 
-    print(f"\nНайдено {len(books)} книг:")
+    print(f"\nНайдено книг ({len(books)} шт):")
     for index, book in enumerate(books, start=1):
-        print(f"{index}) {book['title']}, {book['author']}, {book['year']}")
+        print(f"{index}) {book['title']}, {book['author']}, {book['year']} г.")
 
 
 def change_status(library: Library) -> None:
@@ -80,11 +78,10 @@ def change_status(library: Library) -> None:
         print(messages.LIBRARY_IS_EMPTY)
         return
 
-    while True:
-        book_id = input_book_id()
-        if library.book_exists(book_id):
-            break
+    book_id = input_book_id()
+    if not library.book_exists(book_id):
         print(messages.BOOK_NOT_FOUND)
+        return
 
     new_status = input_status()
 
